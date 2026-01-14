@@ -313,17 +313,19 @@ cls
 call :CONFIRMAR || goto MENU
 call :LOG "Aplicando imagen corporativa"
 
-:: Fondo
+:: Fondo de escritorio
 reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%~dp02.jpg" /f >nul
 RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
 
-:: Imagen usuario
-set DEST=%APPDATA%\Microsoft\Windows\AccountPictures
-if not exist "%DEST%" mkdir "%DEST%"
-copy "%~dp03.jpg" "%DEST%\user.jpg" /Y >nul
+:: Pantalla de bloqueo (requiere admin)
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v LockScreenImage /t REG_SZ /d "%~dp01.jpg" /f >nul
 
-call :LOG "Imagen corporativa aplicada"
-echo Imagen corporativa aplicada.
+call :LOG "Imagen corporativa aplicada (fondo + bloqueo)"
+
+echo.
+echo Fondo aplicado inmediatamente.
+echo Pantalla de bloqueo requiere cerrar sesion o reiniciar.
 pause
 goto MENU
 
